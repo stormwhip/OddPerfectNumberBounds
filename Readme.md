@@ -8,19 +8,19 @@ Python 3.11 is sufficient. The verifier uses the standard library and exact rati
 
     python QBoundVerify.py 50290000000000 18909040000000000000000 77050000000000000000 189326366793 86154121237231668
 
-The last two arguments are the sum of the candidate counts and the sum of the integer reciprocal bounds in [QBoundSieveRuns.tsv](QBoundSieveRuns.tsv). Its intervals are lower-exclusive and upper-inclusive. Reciprocal bounds use a scale of 10^18. The [run log](QBoundOvernight.log) and [error log](QBoundOvernightErrors.log) record the overnight computation.
+The last two arguments are the sum of the candidate counts and the sum of the integer reciprocal bounds in [QBoundSieveRuns.tsv](QBoundSieveRuns.tsv). Its intervals are lower-exclusive and upper-inclusive. Reciprocal bounds use a scale of 10^18.
 
 ## Reproduce or extend the sieve
 
-Build with GCC or MinGW-w64 and C++17. This code uses the compiler's unsigned 128-bit integer type.
+Build with GCC or MinGW-w64 and C++17. The sieve accepts upper endpoints through 10^14 and accumulates reciprocal bounds in unsigned 128-bit integers.
 
     g++ -std=c++17 -O3 -pthread QBoundPrefix.cpp -o QBoundPrefix.exe
 
 Each row can be reproduced with the arguments upper endpoint, worker count, lower endpoint, and exclusion-prime limit. For example, the last complete interval was computed with:
 
-    QBoundPrefix.exe 50290000000000 16 50280000000000 3000000
+    .\QBoundPrefix.exe 50290000000000 16 50280000000000 3000000
 
-The program prints the candidate count and scaled reciprocal bound on separate lines. On Windows PowerShell, invoke a local executable as .\QBoundPrefix.exe. The [overnight runner](QBoundOvernight.py) accepts a future ISO 8601 deadline with a UTC offset, saves complete intervals, and regenerates the numerical fields in the report. It uses the report's embedded markers to preserve its wording.
+The program prints the candidate count and scaled reciprocal bound on separate lines. For this interval the outputs are 36314737 and 722196535949.
 
 ## Original work and attribution
 
@@ -38,4 +38,4 @@ Pascal Ochem and Joshua Zelinsky, *On odd perfect numbers with exactly one even 
 
 When running the original tree program, pass -db CheckFacts.txt from the OriginalWork/Source directory to select the renamed data file.
 
-The [letter to the authors](PellConstruction/LetterToAuthors.txt) records Ruize Zhao's Pell-equation construction answering Question 9 of the paper.
+The appendix of the [research report](ResearchReport.md) includes Ruize Zhao's Pell-equation example for Question 9.
