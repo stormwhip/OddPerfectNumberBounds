@@ -50,3 +50,7 @@ Pascal Ochem and Joshua Zelinsky, *On odd perfect numbers with exactly one even 
 [Extended numerical LP exploration](Stage%202/experiments/ExtendedSearchReport.md): with degree ≤4 and modulus ≤100,000, full numerical LP over 12/14/15 primes (214/279/310 columns, 4,095/16,383/32,767 Boolean constraints) returns the same 97-term polynomial. The current small-modulus LP family appears saturated; this does not prove global optimality for more general analytic sieves.
 
 Code: [extended_lp_search.py](Stage%202/experiments/extended_lp_search.py); [results JSON](Stage%202/experiments/extended_search_summary.json). Research will next investigate alternative mathematically admissible sieve weights and genuinely large-scale column/constraint generation.
+
+### Follow-up: deterministic constraint generation
+
+[Constraint-generation report](Stage%202/experiments/ConstraintGenerationReport.md), [implementation](Stage%202/experiments/constraint_generation.py), [recorded summary](Stage%202/experiments/constraint_generation_summary.json). In a 16-prime problem with 65,535 Boolean states and 340 candidate monomials, just 339 initial active constraints found the same 97-term LP result; enumeration checked all states and found no violations. This is a **numerical deterministic search result**, not an improved number-theory certificate. The new ML baseline should exceed this approach on genuinely difficult instances.

@@ -1,0 +1,40 @@
+{
+  "date": "2026-11-16",
+  "experiment": "seeded monomial-state constraint generation, no ML",
+  "fixed_B": "50290000000000",
+  "fixed_Z": "57433500000000000000000",
+  "degree": 4,
+  "maxmod": 100000,
+  "results": [
+    {
+      "n": 12,
+      "columns": 214,
+      "all_constraints": 4095,
+      "active_constraints": 213,
+      "rounds": 1,
+      "seconds": 0.0582,
+      "nonzero": 97
+    },
+    {
+      "n": 15,
+      "columns": 310,
+      "all_constraints": 32767,
+      "active_constraints": 309,
+      "rounds": 1,
+      "seconds": 0.2652,
+      "nonzero": 97
+    },
+    {
+      "n": 16,
+      "columns": 340,
+      "all_constraints": 65535,
+      "active_constraints": 339,
+      "rounds": 1,
+      "seconds": 0.5088,
+      "nonzero": 97
+    }
+  ],
+  "delta_approx": 0.38291214549793,
+  "C_approx": 0.51547619047619,
+  "numerical_only": true
+}

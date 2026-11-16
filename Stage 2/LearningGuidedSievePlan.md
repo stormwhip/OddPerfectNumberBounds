@@ -127,3 +127,7 @@ research/
 已实际运行 12、14、15 个素数的完整 LP，允许至四次交集、模数≤100000，合法项分别为 214、279、310 个。三者数值最优解均回到原 97 项多项式；15 个素数涉及 32767 条非零布尔约束，耗时约 22 秒。改变 Z 的测试也保持相同多项式结构。详见 [ExtendedSearchReport.md](experiments/ExtendedSearchReport.md)，完整实验程序是 [extended_lp_search.py](experiments/extended_lp_search.py)。
 
 近期探索重点调整为更丰富的数学筛权以及有真实计算困难的列/约束生成，而非继续扩大这个已经饱和的有限单项式池。所有扩展 LP 输出均为探索性数值，严格界仍是 Stage 1 的 q>2.193×10^20。
+
+## 11. 第三轮约束生成实验（2026-11-16）
+
+见 [ConstraintGenerationReport.md](experiments/ConstraintGenerationReport.md)。16 个素数、65,535 个布尔状态的完整问题，可以从 339 个合法单项式对应的状态开始求解，并用全部状态验证；当前实验中一轮即找到与完整 LP 一致的 97 项解。此结果进一步加强了**不使用 ML 的基线**：后续若要证明 ML 有贡献，应设计会触发多轮约束/列生成的困难实例，并比较总求解时间、最终严格认证的下界和泛化表现。
