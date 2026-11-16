@@ -10,7 +10,7 @@ q > 220000000000000000000 = 2.20 × 10^20
 
 ## 文件与依赖
 
-- [ResearchReport.md](ResearchReport.md)：正文数学推导，97 项容斥多项式、显式素数计数尾部估计、有限筛、Question 9 素数构造。
+- [ResearchReport.md](ResearchReport.md)：正文数学推导，97 项容斥多项式、显式素数计数尾部估计、有限筛。
 - [QBoundVerifyAPRefined.py](QBoundVerifyAPRefined.py)：当前 2.20×10^20 下界的精确验证。
 - [DeterministicResearchPlan.md](DeterministicResearchPlan.md)：不使用 ML 的算法改进研究路线。
 - [QBoundVerifyOptimized.py](QBoundVerifyOptimized.py)：前一版 2.193×10^20 下界的**精确有理数验证**，检查 4096 个布尔状态、97 项、4943 段汇总。
