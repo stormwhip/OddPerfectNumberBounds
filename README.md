@@ -6,12 +6,8 @@
 q > 220000000000000000000 = 2.20 × 10^20
 ```
 
-本仓库包含受限奇完全数指数下界研究的数学论证、有限筛程序、数据、精确证书，以及英文 LaTeX 论文初稿。
+本仓库包含受限奇完全数指数下界的数学研究报告、分段同余筛程序、原始计算数据与精确有理数验证程序。原论文及英文 LaTeX 稿件已从仓库当前版本中移出。
 
-## 论文初稿
-
-- [paper/main.tex](paper/main.tex)：仅围绕指数下界主定理的英文 LaTeX 初稿。
-- [paper/AuditChecklist.md](paper/AuditChecklist.md)：证明严谨性与计算复现核验清单。
 
 ## 文件与依赖
 
@@ -22,7 +18,6 @@ q > 220000000000000000000 = 2.20 × 10^20
 - [QBoundVerify.py](QBoundVerify.py)：最初的 7.705×10^19 下界及供优化验证器调用的有理数计算。
 - [QBoundPrefix.cpp](QBoundPrefix.cpp)：C++17 分段筛程序。
 - [QBoundSieveRuns.tsv](QBoundSieveRuns.tsv)：保存的 4943 段筛选数据。
-- [OriginalWork](OriginalWork/)：原作者提供的论文及伴随程序、因子树数据，保留原文件内容，并在总 README 中署名。
 
 ## 复现
 
