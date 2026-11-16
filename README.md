@@ -44,3 +44,9 @@ Experimental floating-point LP objectives are distinct from Stage 1's rigorous i
 ## Original work and attribution
 
 Pascal Ochem and Joshua Zelinsky, *On odd perfect numbers with exactly one even exponent greater than 2*, [arXiv:2607.19746v1](https://arxiv.org/abs/2607.19746v1). The [archived PDF](Stage%201/OriginalWork/RestrainedOddPerfectNumbers.pdf) is distributed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); the authors' archived source and data are unchanged.
+
+## Latest Stage 2 exploration: larger exact-constraint LPs
+
+[Extended numerical LP exploration](Stage%202/experiments/ExtendedSearchReport.md): with degree ≤4 and modulus ≤100,000, full numerical LP over 12/14/15 primes (214/279/310 columns, 4,095/16,383/32,767 Boolean constraints) returns the same 97-term polynomial. The current small-modulus LP family appears saturated; this does not prove global optimality for more general analytic sieves.
+
+Code: [extended_lp_search.py](Stage%202/experiments/extended_lp_search.py); [results JSON](Stage%202/experiments/extended_search_summary.json). Research will next investigate alternative mathematically admissible sieve weights and genuinely large-scale column/constraint generation.

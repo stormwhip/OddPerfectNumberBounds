@@ -4,7 +4,7 @@
 
 **本轮已经实际训练并测试 LightGBM；没有产生新的可认证数论下界。**
 
-当前记录的严格结果仍为 q > 2.193 × 10^20，证书由仓库的 QBoundVerifyOptimized.py 验证。
+当前记录的严格结果仍为 q > 2.193 × 10^20，证书由 Stage 1/QBoundVerifyOptimized.py 验证。
 
 ### A. 纯线性规划基线
 
@@ -51,10 +51,10 @@
 安装 Python 3.11+ 的 numpy、scipy、scikit-learn、lightgbm；在仓库根目录依次执行：
 
 ```bash
-python "Stage 2/experiments/"learning_guided_pilot.py --train 60 --test 20 --budget 5 --seed 42 --output research/experiments/seed42.json
-python "Stage 2/experiments/"learning_guided_pilot.py --train 60 --test 20 --budget 5 --seed 123 --output research/experiments/seed123.json
-python "Stage 2/experiments/"learning_guided_pilot.py --train 60 --test 20 --budget 5 --seed 2026 --output research/experiments/seed2026.json
-python "Stage 2/experiments/"learning_guided_pilot.py --train 60 --test 20 --budget 5 --seed 2027 --output research/experiments/seed2027.json
+python "Stage 2/experiments/learning_guided_pilot.py" --train 60 --test 20 --budget 5 --seed 42 --output "Stage 2/experiments/seed42.json"
+python "Stage 2/experiments/learning_guided_pilot.py" --train 60 --test 20 --budget 5 --seed 123 --output "Stage 2/experiments/seed123.json"
+python "Stage 2/experiments/learning_guided_pilot.py" --train 60 --test 20 --budget 5 --seed 2026 --output "Stage 2/experiments/seed2026.json"
+python "Stage 2/experiments/learning_guided_pilot.py" --train 60 --test 20 --budget 5 --seed 2027 --output "Stage 2/experiments/seed2027.json"
 python "Stage 1/QBoundVerifyOptimized.py"
 ```
 
