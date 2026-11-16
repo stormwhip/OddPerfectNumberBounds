@@ -51,11 +51,11 @@
 安装 Python 3.11+ 的 numpy、scipy、scikit-learn、lightgbm；在仓库根目录依次执行：
 
 ```bash
-python research/experiments/learning_guided_pilot.py --train 60 --test 20 --budget 5 --seed 42 --output research/experiments/seed42.json
-python research/experiments/learning_guided_pilot.py --train 60 --test 20 --budget 5 --seed 123 --output research/experiments/seed123.json
-python research/experiments/learning_guided_pilot.py --train 60 --test 20 --budget 5 --seed 2026 --output research/experiments/seed2026.json
-python research/experiments/learning_guided_pilot.py --train 60 --test 20 --budget 5 --seed 2027 --output research/experiments/seed2027.json
-python QBoundVerifyOptimized.py
+python "Stage 2/experiments/"learning_guided_pilot.py --train 60 --test 20 --budget 5 --seed 42 --output research/experiments/seed42.json
+python "Stage 2/experiments/"learning_guided_pilot.py --train 60 --test 20 --budget 5 --seed 123 --output research/experiments/seed123.json
+python "Stage 2/experiments/"learning_guided_pilot.py --train 60 --test 20 --budget 5 --seed 2026 --output research/experiments/seed2026.json
+python "Stage 2/experiments/"learning_guided_pilot.py --train 60 --test 20 --budget 5 --seed 2027 --output research/experiments/seed2027.json
+python "Stage 1/QBoundVerifyOptimized.py"
 ```
 
 环境：本地 CPU、SciPy/HiGHS 与 LightGBM；未使用网络推理、第三方 API 密钥或付费模型。

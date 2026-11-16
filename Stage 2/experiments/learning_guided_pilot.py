@@ -77,7 +77,7 @@ def main():
     cli.add_argument("--test", type=int, default=20)
     cli.add_argument("--budget", type=int, default=5)
     cli.add_argument("--seed", type=int, default=42)
-    cli.add_argument("--output", default="research/experiments/pilot_results.json")
+    cli.add_argument("--output", default="Stage 2/experiments/pilot_results.json")
     args = cli.parse_args()
     rng = np.random.default_rng(args.seed)
     choices = [(7, *sub) for n in (8, 9, 10, 11)
