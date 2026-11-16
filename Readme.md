@@ -49,3 +49,20 @@ The **learning-guided method is proposed research, not an implemented ML result*
 Pascal Ochem and Joshua Zelinsky, *On odd perfect numbers with exactly one even exponent greater than 2*, [arXiv:2607.19746v1](https://arxiv.org/abs/2607.19746v1). Their unchanged [PDF](OriginalWork/RestrainedOddPerfectNumbers.pdf) is provided under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Their archived companion code/data are in [OriginalWork](OriginalWork), unchanged by this update.
 
 The report also gives Ruize Zhao's Pell-equation prime example addressing the paper's Question 9.
+
+## First learning-guided pilot (November 16, 2026)
+
+A **real, local LightGBM experiment** has now been run; the mathematical bound remains **q > 2.193 × 10^20**. Full LP finds the existing 97-term polynomial optimal within tested 12/13-prime search spaces at fixed Z (99, 211 and 244 allowed columns).
+
+Across four seeded 60-train / 20-test instance splits, with a five-cubic-term selection budget, average fractions of the complete LP objective reduction were **72.70% (LightGBM)**, **75.06% (deterministic rule)**, and **54.49% (random selection)**. The model beats random selection but does not beat the simple rule in this first pilot; a larger and more challenging search domain is needed.
+
+- [Complete first-pilot findings](research/experiments/PilotReport.md)
+- [LightGBM pilot code](research/experiments/learning_guided_pilot.py)
+- [Full LP baseline code](research/experiments/lp_full_search.py)
+
+Reproduce locally (numpy, scipy, scikit-learn, lightgbm; **no paid API**):
+
+    python research/experiments/lp_full_search.py 12 100000
+    python research/experiments/learning_guided_pilot.py --train 60 --test 20 --budget 5 --seed 42
+
+The LP and learning metrics are exploratory optimization measurements; only the independent exact rational verifier certifies a number-theory lower bound.
