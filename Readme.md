@@ -1,41 +1,51 @@
 # Odd Perfect Number Bounds
 
-This repository contains a computational extension of the exponent bound for restrained odd perfect numbers. Under the reduction, small-prime exclusions, and Lemma 8 of Ochem and Zelinsky, the recorded sieve and rational verification give **q > 7.705 x 10^19** at **B = 5.029 x 10^13**. The [research report](ResearchReport.md) contains the proof, data summary, and full reproduction instructions.
+Certified analytic and computational bounds for the exceptional even exponent of a restrained odd perfect number, extending Ochem and Zelinsky (2026).
 
-## Verify the recorded bound
+## Current result
 
-Python 3.11 is sufficient. The verifier uses the standard library and exact rational arithmetic.
+**q > 219,300,000,000,000,000,000 (2.193 × 10^20)**, conditional on the original paper's reduction and exclusions and the recorded finite sieve data.
+
+This improves the prior repository bound **q > 7.705 × 10^19** by approximately **2.85×**. The original article proved q ≥ 2.3 × 10^10. The new 97-term majorant was discovered through **deterministic optimization**; no machine-learning model has been trained.
+
+The finite sieve covers 4,943 contiguous intervals up to B=50,290,000,000,000, with 189,326,366,793 candidates and scaled reciprocal sum 86,154,121,237,231,668. The improved certificate uses 12 excluded primes and checks every one of 4,096 Boolean assignments, with delta=64959667/169646400 and C=433/840.
+
+## Quick reproduction (Python standard library only)
+
+Run the improved verifier from the repository root:
+
+    python QBoundVerifyOptimized.py
+
+Expected terminal line:
+
+    CERTIFIED: q > 219300000000000000000
+
+The program checks the upper-majorant inequality, 97 permitted terms, exact coefficients, entire saved TSV continuity and totals, and the final exact rational inequality. It imports the original QBoundVerify.py.
+
+Reproduce the earlier bound:
 
     python QBoundVerify.py 50290000000000 18909040000000000000000 77050000000000000000 189326366793 86154121237231668
 
-The last two arguments are the sum of the candidate counts and the sum of the integer reciprocal bounds in [QBoundSieveRuns.tsv](QBoundSieveRuns.tsv). Its intervals are lower-exclusive and upper-inclusive. Reciprocal bounds use a scale of 10^18.
+## Finite sieve
 
-## Reproduce or extend the sieve
+Build using GCC/MinGW-w64 and C++17:
 
-Build with GCC or MinGW-w64 and C++17. The sieve accepts upper endpoints through 10^14 and accumulates reciprocal bounds in unsigned 128-bit integers.
+    g++ -std=c++17 -O3 -pthread QBoundPrefix.cpp -o QBoundPrefix
+    ./QBoundPrefix 50290000000000 16 50280000000000 3000000
 
-    g++ -std=c++17 -O3 -pthread QBoundPrefix.cpp -o QBoundPrefix.exe
+The last interval reproduces 36,314,737 candidates and scaled reciprocal upper sum 722,196,535,949. The recorded TSV has 4,943 interval rows. **A fully independent rerun of every interval remains outstanding** before submission.
 
-Each row can be reproduced with the arguments upper endpoint, worker count, lower endpoint, and exclusion-prime limit. For example, the last complete interval was computed with:
+## Project files and research direction
 
-    .\QBoundPrefix.exe 50290000000000 16 50280000000000 3000000
+- [Research report](ResearchReport.md): mathematical proof, original and optimized bounds, and Question 9.
+- [Optimized verifier](QBoundVerifyOptimized.py): fully exact new certificate.
+- [Original verifier](QBoundVerify.py), [C++ segmented sieve](QBoundPrefix.cpp), and [recorded runs](QBoundSieveRuns.tsv).
+- [Learning-guided certified sieve search: detailed research plan](research/LearningGuidedSievePlan.md): mathematical LP formulation, learning-guided column selection, non-ML baselines, exact verification, experimental design, metrics, and six-week milestones.
 
-The program prints the candidate count and scaled reciprocal bound on separate lines. For this interval the outputs are 36314737 and 722196535949.
+The **learning-guided method is proposed research, not an implemented ML result**. The plan uses local/open-source tools with no paid model/API calls.
 
 ## Original work and attribution
 
-Pascal Ochem and Joshua Zelinsky, *On odd perfect numbers with exactly one even exponent greater than 2*, [arXiv:2607.19746v1](https://arxiv.org/abs/2607.19746v1). The [bundled paper](OriginalWork/RestrainedOddPerfectNumbers.pdf) is provided under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Its PDF contents are unchanged. The original programs and data are from the [authors' companion page](https://www.lirmm.fr/~ochem/opn/restrained/). They are reproduced with their contents intact and their filenames adapted to the repository convention.
+Pascal Ochem and Joshua Zelinsky, *On odd perfect numbers with exactly one even exponent greater than 2*, [arXiv:2607.19746v1](https://arxiv.org/abs/2607.19746v1). Their unchanged [PDF](OriginalWork/RestrainedOddPerfectNumbers.pdf) is provided under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Their archived companion code/data are in [OriginalWork](OriginalWork), unchanged by this update.
 
-| Companion filename | Repository file |
-| --- | --- |
-| all.cpp | [All.cpp](OriginalWork/Source/All.cpp) |
-| pairs.py | [Pairs.py](OriginalWork/Source/Pairs.py) |
-| loopless.cpp | [Loopless.cpp](OriginalWork/Source/Loopless.cpp) |
-| tree.cpp | [Tree.cpp](OriginalWork/Source/Tree.cpp) |
-| tree.txt | [Tree.txt](OriginalWork/Source/Tree.txt) |
-| checkfacts.txt | [CheckFacts.txt](OriginalWork/Source/CheckFacts.txt) |
-| 3p2.txt | [ThreeSquared.txt](OriginalWork/Source/ThreeSquared.txt) |
-
-When running the original tree program, pass -db CheckFacts.txt from the OriginalWork/Source directory to select the renamed data file.
-
-The appendix of the [research report](ResearchReport.md) includes Ruize Zhao's Pell-equation example for Question 9.
+The report also gives Ruize Zhao's Pell-equation prime example addressing the paper's Question 9.
