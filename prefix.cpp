@@ -1,7 +1,7 @@
 // Compute an integer upper bound on the reciprocal sum for Section 4 of
 // Ochem and Zelinsky (arXiv:2607.19746), using their exclusions below 3,000,000.
-// Build: g++ -std=c++17 -O3 -pthread QBoundPrefix.cpp -o QBoundPrefix
-// Usage: QBoundPrefix [upper [threads [lower [residue-limit]]]]
+// Build: g++ -std=c++17 -O3 -pthread prefix.cpp -o prefix
+// Usage: prefix [upper [threads [lower [residue-limit]]]]
 // The second output is the upper bound multiplied by 10^18.
 #include <algorithm>
 #include <atomic>
@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
     if (!valid || lower < seed_limit || upper <= lower ||
         upper > upper_limit || workers < 1 || workers > 128 ||
         residue_limit > seed_limit) {
-        std::cerr << "Usage: QBoundPrefix [upper [threads [lower [residue-limit]]]]\n";
+        std::cerr << "Usage: prefix [upper [threads [lower [residue-limit]]]]\n";
         return 1;
     }
     int prime_limit = static_cast<int>(residue_limit);

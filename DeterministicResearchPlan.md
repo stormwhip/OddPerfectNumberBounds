@@ -1,6 +1,6 @@
 # Deterministic algorithm research directions
 
-Date: 2026-11-16. These are hypotheses and experimental plans, not claims that a more powerful algorithm has already been implemented. The benchmark is [QBoundVerifyAPRefined.py](QBoundVerifyAPRefined.py), which certifies q > 2.20 × 10^20 using the existing finite-sieve data.
+Date: 2026-11-16. These are hypotheses and experimental plans, not claims that a more powerful algorithm has already been implemented. The benchmark is [verify.py](verify.py), which certifies q > 2.20 × 10^20 using the existing finite-sieve data.
 
 ## 1. Highest-priority immediate direction: modulus-specific prime-counting errors
 

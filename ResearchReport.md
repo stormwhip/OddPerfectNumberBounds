@@ -46,9 +46,9 @@ $$
 
 ## 2. 分段同余筛
 
-若 $r\in R$，则 $r^2+r+1=\sigma(r^2)$ 的每个素因子都整除 $N$。对已排除的素数 $\ell\equiv1\pmod3$，$x^2+x+1\bmod\ell$ 的两个根就是模 $\ell$ 的非平凡三次单位根。程序先用埃拉托斯特尼筛去合数，再标记这两个剩余类。对每个剩余的素数累加 $\lceil 10^{18}/(r-1)\rceil$，向上取整保证总和是上界。[筛选程序](QBoundPrefix.cpp)
+若 $r\in R$，则 $r^2+r+1=\sigma(r^2)$ 的每个素因子都整除 $N$。对已排除的素数 $\ell\equiv1\pmod3$，$x^2+x+1\bmod\ell$ 的两个根就是模 $\ell$ 的非平凡三次单位根。程序先用埃拉托斯特尼筛去合数，再标记这两个剩余类。对每个剩余的素数累加 $\lceil 10^{18}/(r-1)\rceil$，向上取整保证总和是上界。[筛选程序](prefix.cpp)
 
-同一行的区间使用表内指定上限内的已排除素数。各段均包含其范围内所有可能的普通素因子。筛选程序使用 128 位整数累加，转换为 64 位无符号整数输出前检查数值范围。逐段记录及其筛除参数见数据表。[分段数据](QBoundSieveRuns.tsv)
+同一行的区间使用表内指定上限内的已排除素数。各段均包含其范围内所有可能的普通素因子。筛选程序使用 128 位整数累加，转换为 64 位无符号整数输出前检查数值范围。逐段记录及其筛除参数见数据表。[分段数据](sieve.tsv)
 
 | 完整区间 | 筛除所用素数的上限 | 候选数 | 倒数和上界，乘 $10^{18}$ |
 |---|---:|---:|---:|
@@ -86,7 +86,7 @@ $$
 \tag{3}
 $$
 
-式 (3) 中的模数范围保证 $t\ge8\times10^9$ 时可使用这些显式估计。主项系数来自把每个 $I_\ell$ 替换为 $2/(\ell-1)$。误差系数按交集的剩余类数量计入，模数不超过 $10^4$ 时每类取 $1/840$，其余每类取 $1/160$。有理数脚本直接从集合 $H$ 计算这两个系数。[等差数列素数计数定理](https://arxiv.org/abs/1802.00085v3) · [数值核验脚本](QBoundVerify.py)
+式 (3) 中的模数范围保证 $t\ge8\times10^9$ 时可使用这些显式估计。主项系数来自把每个 $I_\ell$ 替换为 $2/(\ell-1)$。误差系数按交集的剩余类数量计入，模数不超过 $10^4$ 时每类取 $1/840$，其余每类取 $1/160$。有理数脚本直接从集合 $H$ 计算这两个系数。[等差数列素数计数定理](https://arxiv.org/abs/1802.00085v3) · [数值核验脚本](verify.py)
 
 设 $P_G(t)=\sum_{r\le t,\ r\ {\rm prime}}G(r)$。从 $w_Z(r)=\int_r^Z dt/(t-1)^2$ 得到尾部权重上界
 
@@ -116,25 +116,25 @@ $$
 \le 0.287681254791.
 $$
 
-有理数核验给出 $\log(4/3)\ge 0.287682072451$，与式 (1) 矛盾。脚本对对数使用带余项界的级数，对最终两个十进制数分别向上和向下取整。[数值核验脚本](QBoundVerify.py)
+有理数核验给出 $\log(4/3)\ge 0.287682072451$，与式 (1) 矛盾。脚本对对数使用带余项界的级数，对最终两个十进制数分别向上和向下取整。[数值核验脚本](verify.py)
 
 用已保存的数据直接复核最后一步。
 
 ```powershell
-python QBoundVerify.py 50290000000000 18909040000000000000000 77050000000000000000 189326366793 86154121237231668
+python verify.py
 ```
 
-从头复算时，编译仓库中的 [QBoundPrefix.cpp](QBoundPrefix.cpp)。该版本允许筛选终点至 $10^{14}$，覆盖本报告中的 $B=5.029\times10^{13}$。下面的命令会重新运行完整有限筛，逐行核对候选数及倒数和上界。
+从头复算时，编译仓库中的 [prefix.cpp](prefix.cpp)。该版本允许筛选终点至 $10^{14}$，覆盖本报告中的 $B=5.029\times10^{13}$。下面的命令会重新运行完整有限筛，逐行核对候选数及倒数和上界。
 
 ```powershell
-g++ -std=c++17 -O3 -pthread QBoundPrefix.cpp -o QBoundPrefix.exe
+g++ -std=c++17 -O3 -pthread prefix.cpp -o prefix.exe
 if ($LASTEXITCODE -ne 0) { throw "Compilation failed" }
 
-$rows = Import-Csv .\QBoundSieveRuns.tsv -Delimiter ([char]9)
+$rows = Import-Csv .\sieve.tsv -Delimiter ([char]9)
 $count = 0L
 $scaledSum = 0L
 foreach ($row in $rows) {
-    $result = & .\QBoundPrefix.exe $row.upper_inclusive 16 $row.lower_exclusive $row.residue_limit
+    $result = & .\prefix.exe $row.upper_inclusive 16 $row.lower_exclusive $row.residue_limit
     if ($LASTEXITCODE -ne 0 -or $result.Count -ne 2 -or
         $result[0] -ne $row.survivors -or $result[1] -ne $row.scaled_reciprocal_upper) {
         throw "Sieve result mismatch for endpoint $($row.upper_inclusive)"
@@ -142,7 +142,7 @@ foreach ($row in $rows) {
     $count += [long]$result[0]
     $scaledSum += [long]$result[1]
 }
-python QBoundVerify.py 50290000000000 18909040000000000000000 77050000000000000000 $count $scaledSum
+python verify.py
 ```
 
 ## 5. 后续研究线索
@@ -207,7 +207,7 @@ Z=57\,433\,500\,000\,000\,000\,000\,000,\qquad
 q_0=219\,300\,000\,000\,000\,000\,000.
 \]
 
-[QBoundVerifyOptimized.py](QBoundVerifyOptimized.py) 调用原有验证器的有理数积分及对数界，并使用完整保存的分段数据，向外取整后得到
+[verify.py](verify.py) 复用严格有理数积分及对数界的计算，并使用完整保存的分段数据，向外取整后得到
 
 \[
 \text{上界}\le0.287679480710187,\qquad
@@ -219,7 +219,7 @@ q_0=219\,300\,000\,000\,000\,000\,000.
 在仓库根目录执行：
 
 ~~~bash
-python QBoundVerifyOptimized.py
+python verify.py
 ~~~
 
 会逐项复核全部 \(2^{12}=4096\) 个布尔状态、97 项模数约束、4,943 行 TSV 连续性和汇总，以及最后的有理数比较。全部原始有限筛的独立重新运行仍为投稿前的待完成事项。
@@ -265,6 +265,6 @@ q_0=220\,000\,000\,000\,000\,000\,000.
 \boxed{q>2.20\times10^{20}}.
 \]
 
-独立复算入口：[QBoundVerifyAPRefined.py](QBoundVerifyAPRefined.py)。该程序调用前一版多项式证书，检查所有布尔状态与有限筛记录，再采用上述逐模数常数比较最终精确有理数不等式。完整独立重跑有限筛数据仍是投稿前的重要任务。
+独立复算入口：[verify.py](verify.py)。该程序直接检查全部布尔状态、有限筛记录，并采用上述逐模数常数比较最终精确有理数不等式。完整独立重跑有限筛数据仍是投稿前的重要任务。
 
 纯确定性算法的后续研究路线：[DeterministicResearchPlan.md](DeterministicResearchPlan.md)。
