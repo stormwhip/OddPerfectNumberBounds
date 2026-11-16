@@ -6,7 +6,7 @@ Repository with **two separated research stages**. The verified mathematical bou
 
 [Stage 1](Stage%201/) ([阶段说明](Stage%201/README.md)) contains all material needed for the non-ML result:
 
-- [Mathematical report](Stage%201/ResearchReport.md): proof, finite sieve, optimized 97-term inclusion–exclusion majorant and Question 9 example.
+- [Mathematical report](Stage%201/ResearchReport.md): proof, finite sieve, optimized 97-term inclusion–exclusion majorant.
 - [Latest exact verifier](Stage%201/QBoundVerifyAPRefined.py): q > 2.20 × 10^20 using modulus-specific prime-counting errors.
 - [Deterministic research plan](Stage%201/DeterministicResearchPlan.md): error constants, Selberg sieve and finite-sieve improvements.
 - [Earlier exact verifier](Stage%201/QBoundVerifyOptimized.py): verifies 4096 Boolean assignments, 97 terms, rational tail bound and 4943 recorded sieve rows.
