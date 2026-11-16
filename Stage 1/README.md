@@ -8,6 +8,11 @@ q > 220000000000000000000 = 2.20 × 10^20
 
 本目录包含本次确定性数学计算需要的全部原始材料、程序、数据与数学论证；机器学习未参与该下界的发现和证明。
 
+## 论文初稿
+
+- [paper/main.tex](paper/main.tex)：仅围绕指数下界主定理的英文 LaTeX 初稿。
+- [paper/AuditChecklist.md](paper/AuditChecklist.md)：证明严谨性与计算复现核验清单。
+
 ## 文件与依赖
 
 - [ResearchReport.md](ResearchReport.md)：正文数学推导，97 项容斥多项式、显式素数计数尾部估计、有限筛。
