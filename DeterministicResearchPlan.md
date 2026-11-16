@@ -1,4 +1,4 @@
-# Deterministic algorithm research directions (without ML)
+# Deterministic algorithm research directions
 
 Date: 2026-11-16. These are hypotheses and experimental plans, not claims that a more powerful algorithm has already been implemented. The benchmark is [QBoundVerifyAPRefined.py](QBoundVerifyAPRefined.py), which certifies q > 2.20 × 10^20 using the existing finite-sieve data.
 
@@ -39,7 +39,7 @@ General background: Selberg's upper-bound sieve (Lambda-squared construction), a
 - Explore an interval-dependent majorant G_j for B_j < r <= B_{j+1}; account for **all** endpoint error terms, which may offset the main-term gain.
 - Investigate direct estimates for unions of residue classes, replacing individual triangle inequalities where a stronger published theorem is available.
 
-A mere increase in polynomial degree up to 4 did not yield improvement in Stage 2's 12–15-prime numerical LP search with uniform errors and moduli <= 1e5.
+Searches that merely increase the polynomial degree within a fixed monomial pool are not expected to improve bounds when the corresponding polynomial optimization has already reached its optimum; future experiments should target stronger admissible weights or analytic estimates.
 
 ## 4. Expand the finite congruence sieve efficiently
 
@@ -51,4 +51,4 @@ An exploratory scan of the existing 4,943 row prefixes, optimizing Z numerically
 
 Before announcing a new number-theory theorem: (1) check the analytic theorem's valid x and modulus range for every term; (2) generate an integer/rational certificate for coefficients, cutoffs, finite sieve totals, and prime-counting errors; (3) rerun the finite sieve independently on a different code path; (4) archive exact commands, software versions, and raw outputs.
 
-The non-ML mathematical results stay in Stage 1. Exploratory ML and its comparisons remain in Stage 2. No paid model/API credentials are required.
+All numerical improvements should be backed by independently checkable integer or rational certificates.
