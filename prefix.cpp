@@ -1,158 +1,123 @@
-// Compute an integer upper bound on the reciprocal sum for Section 4 of
-// Ochem and Zelinsky (arXiv:2607.19746), using their exclusions below 3,000,000.
-// Build: g++ -std=c++17 -O3 -pthread prefix.cpp -o prefix
-// Usage: prefix [upper [threads [lower [residue-limit]]]]
-// The second output is the upper bound multiplied by 10^18.
-#include <algorithm>
-#include <atomic>
-#include <charconv>
-#include <cstddef>
-#include <cstdint>
-#include <functional>
-#include <iostream>
-#include <limits>
-#include <string_view>
-#include <thread>
-#include <utility>
-#include <vector>
-
-using u64 = std::uint64_t;
-using u128 = __uint128_t;
-
-u64 power_mod(u64 base, int exponent, int modulus) {
-    u64 result = 1;
-    while (exponent > 0) {
-        if (exponent % 2 == 1) {
-            result = result * base % modulus;
-        }
-        base = base * base % modulus;
-        exponent /= 2;
-    }
-    return result;
+/*
+Build: g++ -std=c++17 -O2 -pthread prefix.cpp -o prefix
+Usage: ./prefix [upper [threads [lower [residue_limit]]]]
+Output: surviving candidate count and reciprocal-sum upper bound multiplied by 10^18.
+*/
+#include<bits/stdc++.h>
+#define int long long
+using namespace std;
+using ull=unsigned long long;
+using u128=__uint128_t;
+const int N=1<<19;
+const ull S=1000000000000000000ULL,MAXN=100000000000000ULL;
+struct node
+{
+	ull cnt=0;
+	u128 sum=0;
+};
+ull l=3000000,r=10000000000ULL,t=1,lim=100000;
+int Pows(int a,int b,int mod)
+{
+	int ans=1;
+	while(b)
+	{
+		if(b&1) ans=ans*a%mod;
+		a=a*a%mod;
+		b>>=1;
+	}
+	return ans;
 }
-
-int main(int argc, char** argv) {
-    constexpr u64 seed_limit = 3000000;
-    constexpr int block_size = 1 << 19;
-    constexpr u64 scale = 1000000000000000000ULL;
-    // This keeps the prime sieve index below 10^7 and all address arithmetic
-    // and modular products within 64 bits.
-    constexpr u64 upper_limit = 100000000000000ULL;
-
-    u64 lower = seed_limit;
-    u64 upper = 10000000000;
-    u64 workers = 1;
-    u64 residue_limit = 100000;
-    u64* arguments[] = {&upper, &workers, &lower, &residue_limit};
-    bool valid = argc <= 5;
-    for (int i = 1; valid && i < argc; ++i) {
-        const std::string_view argument(argv[i]);
-        const auto end = argument.data() + argument.size();
-        const auto parsed = std::from_chars(argument.data(), end, *arguments[i - 1]);
-        valid = parsed.ec == std::errc{} && parsed.ptr == end;
-    }
-    if (!valid || lower < seed_limit || upper <= lower ||
-        upper > upper_limit || workers < 1 || workers > 128 ||
-        residue_limit > seed_limit) {
-        std::cerr << "Usage: prefix [upper [threads [lower [residue-limit]]]]\n";
-        return 1;
-    }
-    int prime_limit = static_cast<int>(residue_limit);
-    while (u64(prime_limit) * prime_limit < upper) {
-        ++prime_limit;
-    }
-
-    std::vector<bool> composite(prime_limit + 1);
-    std::vector<int> odd_primes;
-    std::vector<std::pair<int, int>> forbidden_residues;
-    for (int p = 3; p <= prime_limit; p += 2) {
-        if (composite[p]) {
-            continue;
-        }
-        if (u64(p) * p <= upper) {
-            odd_primes.push_back(p);
-        }
-        if (p <= prime_limit / p) {
-            for (int n = p * p; n <= prime_limit; n += 2 * p) {
-                composite[n] = true;
-            }
-        }
-        if (u64(p) <= residue_limit && p % 3 == 1) {
-            int root = 1;
-            for (int base = 2; root == 1; ++base) {
-                root = static_cast<int>(power_mod(base, (p - 1) / 3, p));
-            }
-            forbidden_residues.emplace_back(p, root);
-            forbidden_residues.emplace_back(p, p - 1 - root);
-        }
-    }
-
-    constexpr u64 block_width = 2 * block_size;
-    const u64 first_odd = (lower + 1) | 1;
-    std::atomic<u64> next_block{first_odd};
-    struct Total {
-        u64 survivors = 0;
-        u128 reciprocal_upper = 0;
-    };
-    std::vector<Total> totals(workers);
-    auto sieve_blocks = [&](Total& total) {
-        std::vector<std::uint8_t> marked(block_size);
-        for (u64 lo = next_block.fetch_add(block_width, std::memory_order_relaxed);
-             lo <= upper;
-             lo = next_block.fetch_add(block_width, std::memory_order_relaxed)) {
-            const auto size = static_cast<std::size_t>(
-                std::min<u64>(block_size, (upper - lo) / 2 + 1));
-            const u64 hi = lo + 2 * (size - 1);
-            std::fill_n(marked.begin(), size, 0);
-
-            // Odd multiples within the block advance by 2*p in value, p in index.
-            for (int p : odd_primes) {
-                const u64 square = u64(p) * p;
-                if (square > hi) {
-                    break;
-                }
-                const u64 first = std::max(square, ((lo + p - 1) / p) * p);
-                const u64 first_odd = first % 2 == 1 ? first : first + p;
-                for (u64 i = (first_odd - lo) / 2; i < size; i += p) {
-                    marked[i] = 1;
-                }
-            }
-
-            for (const auto& [p, root] : forbidden_residues) {
-                const u64 first = lo + (root + p - lo % p) % p;
-                const u64 first_odd = first % 2 == 1 ? first : first + p;
-                for (u64 i = (first_odd - lo) / 2; i < size; i += p) {
-                    marked[i] = 1;
-                }
-            }
-
-            for (std::size_t i = 0; i < size; ++i) {
-                if (marked[i]) {
-                    continue;
-                }
-                ++total.survivors;
-                const u64 denominator = lo + 2 * i - 1;
-                total.reciprocal_upper += (scale + denominator - 1) / denominator;
-            }
-        }
-    };
-    std::vector<std::thread> threads;
-    for (u64 i = 1; i < workers; ++i) {
-        threads.emplace_back(sieve_blocks, std::ref(totals[i]));
-    }
-    sieve_blocks(totals.front());
-    for (auto& thread : threads) {
-        thread.join();
-    }
-    Total result;
-    for (const auto& total : totals) {
-        result.survivors += total.survivors;
-        result.reciprocal_upper += total.reciprocal_upper;
-    }
-    if (result.reciprocal_upper > std::numeric_limits<u64>::max()) {
-        std::cerr << "Scaled reciprocal sum exceeds the output range.\n";
-        return 1;
-    }
-    std::cout << result.survivors << '\n'
-              << static_cast<u64>(result.reciprocal_upper) << '\n';
+void Solve()
+{
+	int n=lim;
+	while((ull)n*n<r) n++;
+	vector<bool> vis(n+1);
+	vector<int> p;
+	vector<pair<int,int>> q;
+	for(int i=3;i<=n;i+=2)
+	{
+		if(vis[i]) continue;
+		if((ull)i*i<=r) p.push_back(i);
+		if(i<=n/i)
+			for(int j=i*i;j<=n;j+=2*i) vis[j]=1;
+		if((ull)i<=lim&&i%3==1)
+		{
+			int x=1;
+			for(int j=2;x==1;j++) x=Pows(j,(i-1)/3,i);
+			q.push_back({i,x});
+			q.push_back({i,i-1-x});
+		}
+	}
+	atomic<ull> pos{(l+1)|1ULL};
+	vector<node> ans(t);
+	auto Work=[&](node &res)
+	{
+		vector<unsigned char> a(N);
+		for(ull st=pos.fetch_add(2*N);st<=r;st=pos.fetch_add(2*N))
+		{
+			ull len=min<ull>(N,(r-st)/2+1),ed=st+2*(len-1);
+			fill(a.begin(),a.begin()+len,0);
+			for(int x:p)
+			{
+				ull sq=(ull)x*x;
+				if(sq>ed) break;
+				ull f=max(sq,((st+x-1)/x)*x);
+				if(!(f&1)) f+=x;
+				for(ull j=(f-st)/2;j<len;j+=x) a[j]=1;
+			}
+			for(auto [x,y]:q)
+			{
+				ull f=st+(y+x-st%x)%x;
+				if(!(f&1)) f+=x;
+				for(ull j=(f-st)/2;j<len;j+=x) a[j]=1;
+			}
+			for(ull i=0;i<len;i++)
+			{
+				if(a[i]) continue;
+				res.cnt++;
+				ull d=st+2*i-1;
+				res.sum+=(S+d-1)/d;
+			}
+		}
+	};
+	vector<thread> th;
+	for(int i=1;i<t;i++) th.emplace_back(Work,ref(ans[i]));
+	Work(ans[0]);
+	for(auto &x:th) x.join();
+	node res;
+	for(auto x:ans) res.cnt+=x.cnt,res.sum+=x.sum;
+	if(res.sum>numeric_limits<ull>::max())
+	{
+		cerr<<"Scaled reciprocal sum exceeds the output range.\n";
+		exit(1);
+	}
+	cout<<res.cnt<<"\n"<<(ull)res.sum<<"\n";
+}
+signed main(signed argc,char** argv)
+{
+	ios::sync_with_stdio(false);
+	cin.tie(0);cout.tie(0);
+	ull* a[]={&r,&t,&l,&lim};
+	if(argc>5)
+	{
+		cerr<<"Usage: prefix [upper [threads [lower [residue_limit]]]]\n";
+		return 1;
+	}
+	for(int i=1;i<argc;i++)
+	{
+		string_view s(argv[i]);
+		auto x=from_chars(s.data(),s.data()+s.size(),*a[i-1]);
+		if(x.ec!=errc{}||x.ptr!=s.data()+s.size())
+		{
+			cerr<<"Invalid argument.\n";
+			return 1;
+		}
+	}
+	if(l<3000000||r<=l||r>MAXN||t<1||t>128||lim>3000000)
+	{
+		cerr<<"Invalid range or sieve parameters.\n";
+		return 1;
+	}
+	Solve();
+	return 0;
 }
