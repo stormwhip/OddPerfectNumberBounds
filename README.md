@@ -1,13 +1,15 @@
 # Odd Perfect Number Bounds / 受限奇完全数指数下界研究
 
-Repository with **two separated research stages**. The verified mathematical bound currently recorded is **q > 2.193 × 10^20**. The original article (Ochem–Zelinsky, 2026) proved **q ≥ 2.3 × 10^10**.
+Repository with **two separated research stages**. The verified mathematical bound currently recorded is **q > 2.20 × 10^20**. The original article (Ochem–Zelinsky, 2026) proved **q ≥ 2.3 × 10^10**.
 
 ## Stage 1 — Pure mathematical and computational result (no ML)
 
 [Stage 1](Stage%201/) ([阶段说明](Stage%201/README.md)) contains all material needed for the non-ML result:
 
 - [Mathematical report](Stage%201/ResearchReport.md): proof, finite sieve, optimized 97-term inclusion–exclusion majorant and Question 9 example.
-- [Exact optimized verifier](Stage%201/QBoundVerifyOptimized.py): verifies 4096 Boolean assignments, 97 terms, rational tail bound and 4943 recorded sieve rows.
+- [Latest exact verifier](Stage%201/QBoundVerifyAPRefined.py): q > 2.20 × 10^20 using modulus-specific prime-counting errors.
+- [Deterministic research plan](Stage%201/DeterministicResearchPlan.md): error constants, Selberg sieve and finite-sieve improvements.
+- [Earlier exact verifier](Stage%201/QBoundVerifyOptimized.py): verifies 4096 Boolean assignments, 97 terms, rational tail bound and 4943 recorded sieve rows.
 - [Initial verifier](Stage%201/QBoundVerify.py), [C++ finite sieve](Stage%201/QBoundPrefix.cpp) and [recorded output](Stage%201/QBoundSieveRuns.tsv).
 - [Original paper and companion data](Stage%201/OriginalWork/): Ochem and Zelinsky's archived source, factor-tree data and attributed PDF, kept intact.
 
@@ -15,12 +17,13 @@ Run from the repository root:
 
 ```bash
 cd "Stage 1"
+python QBoundVerifyAPRefined.py
 python QBoundVerifyOptimized.py
 g++ -std=c++17 -O3 -pthread QBoundPrefix.cpp -o QBoundPrefix
 ./QBoundPrefix 50290000000000 16 50280000000000 3000000
 ```
 
-Expected verifier result: `CERTIFIED: q > 219300000000000000000`. The displayed final finite-sieve interval produces 36,314,737 candidates and scaled reciprocal sum 722,196,535,949. The TSV stores 4,943 contiguous intervals; the whole finite sieve awaits a fully independent rerun before paper submission.
+Latest verifier: `CERTIFIED: q > 220000000000000000000`. Earlier verifier: `CERTIFIED: q > 219300000000000000000`. The displayed final finite-sieve interval produces 36,314,737 candidates and scaled reciprocal sum 722,196,535,949. The TSV stores 4,943 contiguous intervals; the whole finite sieve awaits a fully independent rerun before paper submission.
 
 ## Stage 2 — Learning-guided search: experiments and planned extensions
 
